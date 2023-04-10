@@ -16,7 +16,7 @@ namespace SPIL
     {
         private CogToolBlock MeasureToolBlock;
         private Logger logger;
-        public SPILBumpMeasure(string Vision_Pro_Tool_Block_Address, Logger logger)
+        public SPILBumpMeasure(string Vision_Pro_Tool_Block_Address, Logger logger )
         {
             logger.WriteLog("Load AOI File");
             try {
