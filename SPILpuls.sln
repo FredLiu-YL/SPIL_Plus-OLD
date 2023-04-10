@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.33328.57
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPILpuls", "SPILpuls.csproj", "{4B8E7383-CA64-4CC2-9686-5ACC48F5468F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuanliCore", "..\YuanliCore\YuanliCore\YuanliCore.csproj", "{AFC5BB52-03A9-4833-8415-B52DB3B34639}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuanliCore", "YuanliCore\YuanliCore\YuanliCore.csproj", "{AFC5BB52-03A9-4833-8415-B52DB3B34639}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
