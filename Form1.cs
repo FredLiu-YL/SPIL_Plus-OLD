@@ -27,7 +27,7 @@ namespace SPIL
 {
     public partial class Form1 : Form
     {
-        private string setup_Data_address = System.Windows.Forms.Application.StartupPath + "\\Setup\\Setup_Data.xml";
+        private string setup_Data_address = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SPIL\\Setup\\Setup_Data.xml";
         private Logger logger = new Logger("SPIL");
         private string Password = "YuanLi11084483";//Taipei
         private string Password2 = "YuanLi97285208";//Taichung
@@ -780,7 +780,7 @@ namespace SPIL
                 AOI_Measurement.CogDisplay_result_2 = cogDisplay2;
                 AOI_Measurement.CogDisplay_result_3 = cogDisplay3;
                 //載入手動量測vpp
-                Hand_Measurement = new SPILBumpMeasure("Setup//Vision//Hand_Measurement.vpp" , logger);
+                Hand_Measurement = new SPILBumpMeasure("Setup//Vision//Hand_Measurement.vpp", logger);
                 Hand_Measurement.cogRecord_save_result_img = cogRecordDisplay1;
                 Hand_Measurement.CogDisplay_result_1 = cogDisplay1;
                 Hand_Measurement.CogDisplay_result_2 = cogDisplay2;
@@ -2461,15 +2461,19 @@ namespace SPIL
 
         private void button8_Click(object sender, EventArgs e)
         {
-            AlgorithmSetting = AlgorithmSetting.Load<AlgorithmSetting>("D:\\algorithmSet.setting");
+            //   AlgorithmSetting = AlgorithmSetting.Load<AlgorithmSetting>("D:\\algorithmSet.setting");
 
             // 新增一個客戶到列表中
-            /* AlgorithmSetting.AlgorithmDescribes = new List<AlgorithmDescribe>()
-             {
-                 new AlgorithmDescribe("001", "SearchMaxTool", MethodType.CogSearchMaxTool){ CogMethod=new CogMatcher()},
-                 new AlgorithmDescribe("002", "FindEllipseTool", MethodType.CogFindEllipseTool){ CogMethod=new CogEllipseCaliper()},
 
-             }.ToArray() ;*/
+
+            AlgorithmSetting.AlgorithmDescribes = new List<AlgorithmDescribe>()
+             {
+                 new AlgorithmDescribe("001", "SearchMaxTool", MethodType.CogSearchMaxTool){ CogAOIMethod =new CogSearchMax()},
+                 new AlgorithmDescribe("002", "FindEllipseTool", MethodType.CogFindEllipseTool){ CogAOIMethod=new CogEllipseCaliper()},
+
+             }.ToArray();
+
+
 
 
 
@@ -2510,28 +2514,36 @@ namespace SPIL
             //   int i = listBox_AlgorithmList.SelectedIndex;
             //  AlgorithmDescribe item = listBox_AlgorithmList.Items[i] as AlgorithmDescribe;
             //   AlgorithmDescribe Algorithm = listBox_AlgorithmList.SelectedItem as AlgorithmDescribe;
+            try {
 
 
-            AlgorithmDescribe algorithm = AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex];
 
-            switch (algorithm.CogMethodtype) {
-                case MethodType.CogSearchMaxTool:
-                    CogMatcher matcher = algorithm.CogAOIMethod as CogMatcher;
-                    //  var matcher = MethodList[MethodCollectIndex] as CogMatcher;
-                    matcher.EditParameter(aoiImage);
+                AlgorithmDescribe algorithm = AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex];
 
-                    AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = matcher.RunParams;
+                switch (algorithm.CogMethodtype) {
+                    case MethodType.CogSearchMaxTool:
+                        CogSearchMax matcher = algorithm.CogAOIMethod as CogSearchMax;
+                        //  var matcher = MethodList[MethodCollectIndex] as CogMatcher;
+                        matcher.EditParameter(aoiImage);
 
-                    break;
-                case MethodType.CogFindEllipseTool:
-                    CogEllipseCaliper gapCaliper = algorithm.CogAOIMethod as CogEllipseCaliper;
-                    gapCaliper.EditParameter(aoiImage);
+                        AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = matcher.RunParams;
 
-                    AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = gapCaliper.RunParams;
-                    break;
+                        break;
+                    case MethodType.CogFindEllipseTool:
+                        CogEllipseCaliper gapCaliper = algorithm.CogAOIMethod as CogEllipseCaliper;
+                        gapCaliper.EditParameter(aoiImage);
+
+                        AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = gapCaliper.RunParams;
+                        break;
+
+                }
+
             }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
 
-
+                 
+            }
         }
 
         private void btn_AOIOpenImage_Click(object sender, EventArgs e)
