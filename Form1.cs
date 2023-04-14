@@ -22,6 +22,9 @@ using YuanliCore.ImageProcess;
 using YuanliCore.Interface;
 using SPIL.model;
 using YuanliCore.ImageProcess.Match;
+using Cognex.VisionPro;
+using Cognex.VisionPro.ToolBlock;
+using Cognex.VisionPro.ImageProcessing;
 
 namespace SPIL
 {
@@ -2461,6 +2464,9 @@ namespace SPIL
 
         private void button8_Click(object sender, EventArgs e)
         {
+
+            var toolBlock = CogSerializer.LoadObjectFromFile("D:\\MStoolblock.vpp") as CogToolBlock;
+
             //   AlgorithmSetting = AlgorithmSetting.Load<AlgorithmSetting>("D:\\algorithmSet.setting");
 
             // 新增一個客戶到列表中
@@ -2468,17 +2474,16 @@ namespace SPIL
 
             AlgorithmSetting.AlgorithmDescribes = new List<AlgorithmDescribe>()
              {
-                 new AlgorithmDescribe("001", "SearchMaxTool", MethodType.CogSearchMaxTool){ CogAOIMethod =new CogSearchMax()},
-                 new AlgorithmDescribe("002", "FindEllipseTool", MethodType.CogFindEllipseTool){ CogAOIMethod=new CogEllipseCaliper()},
+                 new AlgorithmDescribe("001", "CogSearchMaxTool2", MethodType.CogSearchMaxTool){ CogAOIMethod =new CogSearchMax()},
+                 new AlgorithmDescribe("002", "CogFindEllipseTool3", MethodType.CogFindEllipseTool){ CogAOIMethod=new CogEllipseCaliper()},
+                 new AlgorithmDescribe("003", "CogImageConvertTool1", MethodType.CogImageConvertTool){ CogAOIMethod=new CogImageConverter()},
 
-             }.ToArray();
+             };
+
+            CogSerializer.SaveObjectToFile(toolBlock, "D:\\MStoolblock-2.vpp");
 
 
-
-
-
-
-            //      AlgorithmSetting.Save("D:\\algorithmSet.setting");
+            AlgorithmSetting.Save("D:\\algorithmSet.setting");
             //新增到UI 做顯示
             foreach (var item in AlgorithmSetting.AlgorithmDescribes) {
                 listBox_AlgorithmList.Items.Add(item);
@@ -2490,7 +2495,7 @@ namespace SPIL
 
 
             e.DrawBackground();
-
+            if (e.Index < 0) return;
             // 繪製 代號
             string customerId = ((AlgorithmDescribe)listBox_AlgorithmList.Items[e.Index]).Id;
             Rectangle rect1 = new Rectangle(e.Bounds.Left, e.Bounds.Top, 100, e.Bounds.Height); //建立一個 寬100 的矩形
@@ -2535,14 +2540,19 @@ namespace SPIL
 
                         AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = gapCaliper.RunParams;
                         break;
+                    case MethodType.CogImageConvertTool:
+                        CogImageConverter imageConvert = algorithm.CogAOIMethod as CogImageConverter;
+                        imageConvert.EditParameter(aoiImage);
 
+                        AlgorithmSetting.AlgorithmDescribes[listBox_AlgorithmList.SelectedIndex].CogAOIMethod.RunParams = imageConvert.RunParams;
+                        break;
                 }
 
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
 
-                 
+
             }
         }
 
